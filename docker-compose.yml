@@ -1,0 +1,42 @@
+version: "3.2"
+
+services:
+  zk1:
+    image: jplock/zookeeper:3.4.10
+    ports:
+      - "2181:2181"
+  solr1:
+    image: solr:8.8.2
+    ports:
+      - "8983:8983"
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0 && /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+  solr2:
+    image: solr:8.8.2
+    ports:
+      - "8984:8983"
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+
+  solr3:
+    image: solr:8.8.2
+    ports:
+      - "8985:8983"
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+
+  solr4:
+    image: solr:8.8.2
+    ports:
+      - "8986:8983"
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+
